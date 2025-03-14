@@ -1,39 +1,62 @@
-from django.shortcuts import render
+from django.shortcuts import render,redirect
 from django.http import HttpResponse
+from django.contrib.auth.models import User, auth
+from django.contrib import messages
 from .models import Feature
+
 # Create your views here.
 
 def index(request):
-    feature1 = Feature()
-    feature1.id=0
-    feature1.name='Fast'
-    feature1.details='Our Service is very Quick'
+    features=Feature.objects.all()
 
-    feature2 = Feature()
-    feature2.id=1
-    feature2.name='Reliable'
-    feature2.details='Our Service is very Reliable'
+    return render(request,'index.html',{'Features': features})
 
-    feature3 = Feature()
-    feature3.id=2
-    feature3.name='Easy to use'
-    feature3.details='Our Service is very easy to use'
+def register(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password = request.POST['password']
+        confirm_password = request.POST['password2']
 
-    feature4 = Feature()
-    feature4.id=3
-    feature4.name='Affordable'
-    feature4.details='Our Service is very affordable'
+        if password == confirm_password:
+          if User.objects.filter(email = email).exists():
+             messages.info(request,'email already used')
+             return redirect('register')
+          elif User.objects.filter(username = username).exists():
+            messages.info(request,'Username already used')
+            return redirect('register')
+          else:
+            user = User.objects.create_user(username = username,email = email,password = password)
+            user.save()
+            return redirect('login')
+        else:
+            messages.info(request, 'Password are not same')
+            return redirect('register')
 
-    feature5 = Feature()
-    feature5.id=4
-    feature5.name='Trustworthy'
-    feature5.details='Our Service is very affordable'
-    icons=['bi bi-easel','bi bi-gem','bi bi-geo-alt','bi bi-command']
-    features=[feature1,feature2,feature3,feature4,feature5]
+    else:
+        return render(request,'register.html')
 
-    zipped_item=zip(features,icons)
 
-    return render(request,'index.html',{'zipped_item': zipped_item})
+def login(request):
+    if request.method == 'POST':
+        username=request.POST['username']
+        passowrd=request.POST['password']
+
+        user = auth.authenticate(username=username, password=passowrd)
+
+        if user is not None:
+            auth.login(request, user)
+            return redirect('/')
+        else:
+            messages.info(request,"Credentials Invalid")
+            return redirect('login')  
+    else:
+        return render(request,'login.html')
+
+def Logout(request):
+    auth.logout(request)
+    return redirect('/')
+
 
 def counter(request):
     words=request.POST['words']

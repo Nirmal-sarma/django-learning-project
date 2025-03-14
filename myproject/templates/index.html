@@ -74,11 +74,16 @@
             </ul>
           </li>
           <li><a href="#contact">Contact</a></li>
+          {%if user.is_authenticated %}
+          <li><a class="btn-get-started" href="logout">Sign Out</a></li>
+          {%else%}
+          <li><a class="btn-get-started" href="login">Login or SignUp</a></li>
+           {%endif%}
         </ul>
         <i class="mobile-nav-toggle d-xl-none bi bi-list"></i>
       </nav>
 
-      <a class="btn-getstarted" href="#about">Get Started</a>
+      
 
     </div>
   </header>
@@ -93,7 +98,11 @@
       <div class="container">
         <div class="row justify-content-center" data-aos="zoom-out">
           <div class="col-xl-7 col-lg-9 text-center">
-            <h1>One Page Bootstrap Website Template</h1>
+            {% if user.is_authenticated %}
+            <h1>Welcome, {{user.username}}</h1>
+            {%else%}
+             <h1>One Page Bootstrap Website Template</h1>
+             {%endif%}
             <p>We are team of talented designers making websites with Bootstrap</p>
           </div>
         </div>
@@ -102,13 +111,17 @@
         </div>
         
         <div class="row gy-4 mt-5">
-          {% for feature, icon in zipped_item %}
+          {% for feature in Features %}
           <div class="col-md-6 col-lg-3" data-aos="zoom-out" data-aos-delay="100">
             <div class="icon-box">
-              <div class="icon"><i class= "{{ icon }}" ></i></div> 
+              <div class="icon"><i class= "{{ feature.icon }}" ></i></div> 
               <h4 class="title"><a href=""> {{ feature.name }} </a></h4>
               <p class="description"> {{ feature.details }} </p>
+              {% if feature.name == 'Quick' %}
+               <p class="description">This feature says our site is quick</p>
+              {% endif %}
             </div>
+            
           </div>
           {% endfor %}
         </div>
