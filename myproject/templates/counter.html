@@ -1,5 +1,6 @@
-{% load static %}
+<!-- {% load static %}
 
-<link rel="stylesheet" name="counter" href="{% static 'style.css' %}">
-
-<h1> welcome {{length}} </h1>
+<link rel="stylesheet" name="counter" href="{% static 'style.css' %}"> -->
+{% for post in posts %}
+<h1> <a href="{% url 'post' post%}">welcome {{post}}</a> </h1>
+{% endfor %}

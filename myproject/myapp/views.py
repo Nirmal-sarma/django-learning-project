@@ -57,9 +57,12 @@ def Logout(request):
     auth.logout(request)
     return redirect('/')
 
+def post(request,pk):
+    return render(request,'post.html',{'pk':pk})
+
 
 def counter(request):
-    words=request.POST['words']
+    posts=[1,2,3,4,5,"tim","tom","john"]
     
-    return render(request,'counter.html',{'length': words })
+    return render(request,'counter.html',{'posts': posts})
 
